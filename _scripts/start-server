@@ -1,24 +1,18 @@
 #!/bin/bash
 
-BASE_DIR=/home/gameserv/.loki/tribes2/
+export WINEPREFIX=/home/gameserv/.wine32
+export WINEARCH=win32
+BASEDIR=$WINEPREFIX/drive_c/Dynamix/Tribes2/GameData
 
 echo "Update Admin & Server Prefs..."
 /tmp/tribes2/cfg-admin-prefs
 echo "Finished!"
 
-cd ${BASE_DIR}
+find ${BASEDIR} -name \*.dso -execdir /bin/rm {} \;
 
-echo "Generating alphabetized AutoExec script index..."
-/tmp/tribes2/gen_autoexec_index "${BASE_DIR}Classic/scripts"
-echo "Finished!"
+cd $WINEPREFIX/drive_c/Dynamix/Tribes2/GameData 
 
-echo "Removing .dso files"
-find ${BASE_DIR} -name \*.dso -execdir /bin/rm {} \;
+wine --version
 
 echo "Running the Tribes 2 server"
-chmod +x ${BASE_DIR}tribes2d-lan.dynamic
-
-# -- debug -- keep container running and dont launch the server
-#tail -f /dev/null
-
-/tmp/tribes2/tn_heartbeat & taskset -c 0 ./tribes2d-lan.dynamic 28000 -nologin -dedicated -mod Classic
+xvfb-run -a -w 5 taskset -c 0 wine Tribes2.exe -dedicated -mod Classic

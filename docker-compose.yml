@@ -56,6 +56,8 @@ services:
       T2_LoadScreenMOTD3: " "
       T2_LoadScreenMOTD4: " "
     secrets:
+      - t2.superadmin.list
+      - t2.admin.list
       - t2.admin.password
       - t2.classic.superadmin.password
       - t2.classic.telnet.password
@@ -75,15 +77,9 @@ services:
       - serverStats:/home/gameserv/.loki/tribes2/Classic/serverStats
       - stats:/home/gameserv/.loki/tribes2/Classic/stats
       - logs:/home/gameserv/.loki/tribes2/Classic/logs
-
+                   
     networks:
       - t2-net
-
-    healthcheck:
-      test: ["CMD-SHELL", "nc -z -u 127.0.0.1 28000 || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
     deploy:
       replicas: 1
@@ -101,12 +97,18 @@ volumes:
   serverStats:
   stats:
   logs:
-  
+
 networks:
   t2-net:
     driver: overlay
 
 secrets:
+  t2.superadmin.list:
+    external: true
+    name: t2.superadmin.list.v1
+  t2.admin.list:
+    external: true
+    name: t2.admin.list.v1
   t2.admin.password:
     external: true
     name: t2.admin.password.v1    

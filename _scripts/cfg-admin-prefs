@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SRVUSER=gameserv
-ADMINPREFS_FILE=/home/$SRVUSER/.loki/tribes2/Classic/scripts/autoexec/AdminPrefs.cs
+ADMINPREFS_FILE=/home/$SRVUSER/.wine32/drive_c/Dynamix/Tribes2/GameData/Classic/scripts/autoexec/AdminPrefs.cs
 SECRETS=/run/secrets
 
 # -- set Admin Password

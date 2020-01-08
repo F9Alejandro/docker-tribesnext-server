@@ -1,10 +1,32 @@
 #!/bin/bash
 #
-# -- tribes dedicated server installer
-SRVUSER=gameserv
-INSBASE=/home/$SRVUSER/.loki/
-export TMPBASE=/tmp/tribes2
+# -- tribesnext dedicated server installer
+# --- pulls together the wine server, as terrible as that is,
+# --- patch a linux release d00dz
+# -- author: sairuk
+#
 
+SRVUSER=gameserv
+INSBASE=/home/$SRVUSER/.wine32/drive_c/Dynamix/
+export TMPBASE=/tmp/tribes2
+export WINEARCH=win32
+export WINEPREFIX=/home/$SRVUSER/.wine32/
+export REQUIREMENTS=(wine Xvfb)
+
+# -- server requirements
+function check_requirements {
+    REQMET=1 # -- pretty optimistic eh?
+    for REQ in ${REQUIREMENTS[@]}
+    do
+        RESULT=$(which $REQ)
+        if [ $? != "0" ]
+        then
+            echo "Executable not found: ${REQ}"
+            REQMET=0
+        fi
+    done
+    [ "$REQMET" == "0" ] && echo "Requirements not met, see preceding messages" && exit 1
+}
 
 # -- download the required the files
 function get_files {
@@ -14,24 +36,29 @@ function get_files {
     fi
 }
 
+check_requirements
 
 # -- make directories
 [ ! -d $TMPBASE ] && mkdir -p $TMPBASE
 
 if [ ! -d $INSBASE ]
 then
-    mkdir -p $INSBASE/tribes2/{Manual}
-    mkdir -p $INSBASE/tribes2/base/{music,lighting,textures,prefs}
-    mkdir -p $INSBASE/tribes2/Classic/scripts/{turrets,weapons,autoexec,packs,vehicles}
-	mkdir -p $INSBASE/tribes2/Classic/{logs,stats,serverStats}
+    mkdir -p $INSBASE/Tribes2/Manual
+    mkdir -p $INSBASE/Tribes2/GameData/base/{music,lighting,textures,prefs}
+    mkdir -p $INSBASE/Tribes2/GameData/Classic/scripts/{turrets,weapons,autoexec,packs,vehicles}
 fi
 
 
 
 # -- download files
-get_files t2-linux.zip                   	  	"https://www.dropbox.com/s/ejemimzxjdswtvm/"          	        "$TMPBASE"
-get_files tribes2-lan-fix-linux.tar.gz        	"http://t2.plugh.us/"						        			"$TMPBASE"
-get_files classic_v152.zip                    	"https://tribes2stats.com/files/mods/"                          "$TMPBASE"
+get_files tribes2gsi.exe                      "https://www.the-construct.net/downloads/tribes2/"                "$TMPBASE"
+get_files TribesNext_rc2a.exe                 "https://www.tribesnext.com/files/"                               "$TMPBASE"
+get_files TribesNext_RC2_LinuxVersion.zip     "https://lutris.net/files/games/tribes-2/"                        "$TMPBASE"
+get_files classic_v152.zip                    "https://tribes2stats.com/files/mods/"                            "$TMPBASE"
+
+# -- some items require an headerless
+export DISPLAY=:99
+[ ! $(pidof Xvfb) ] && Xvfb :99 -screen 0 640x480x8 -nolisten tcp & 2>&1 > /dev/null
 
 
 # -- gimme a little time
@@ -40,47 +67,209 @@ sleep 1
 
 # -- extract the main installer, the silent installer is a lie!
 echo "Installing T2..."
-# REMEMBER: There is no GameData in the linux version. Everything is up a dir
-[ -f $TMPBASE/t2-linux.zip ] && /usr/bin/unzip -o $TMPBASE/t2-linux.zip -d $TMPBASE/install 2>&1 > /dev/null
+/usr/bin/wine $TMPBASE/tribes2gsi.exe /x Z:\\tmp\\tribes2\\game
+
+
 # -- move all extract files into place
-cp -r $TMPBASE/install/t2-linux/. $INSBASE/tribes2/.
-echo "T2 installed!"
+if [ -f $TMPBASE/game/Tribes2.exe ]
+then
+    mv $TMPBASE/game/aaBarrelLarge.cs $INSBASE/Tribes2/GameData/Classic/scripts/turrets/aaBarrelLarge.cs
+    mv $TMPBASE/game/aabarrelPack.cs $INSBASE/Tribes2/GameData/Classic/scripts/packs/aabarrelPack.cs
+    mv $TMPBASE/game/admin.cs $INSBASE/Tribes2/GameData/Classic/scripts/admin.cs
+    mv $TMPBASE/game/aiPracticeCtf.cs $INSBASE/Tribes2/GameData/Classic/scripts/aiPracticeCtf.cs
+    mv $TMPBASE/game/AMDW2KCardProfiles.cs $INSBASE/Tribes2/GameData/AMDW2KCardProfiles.cs
+    mv $TMPBASE/game/AMDW98CardProfiles.cs $INSBASE/Tribes2/GameData/AMDW98CardProfiles.cs
+    mv $TMPBASE/game/AMDW98SECardProfiles.cs $INSBASE/Tribes2/GameData/AMDW98SECardProfiles.cs
+    mv $TMPBASE/game/AMDWMECardProfiles.cs $INSBASE/Tribes2/GameData/AMDWMECardProfiles.cs
+    mv $TMPBASE/game/audio.vl2 $INSBASE/Tribes2/GameData/base/audio.vl2
+    mv $TMPBASE/game/badlands.mp3 $INSBASE/Tribes2/GameData/base/music/badlands.mp3
+    mv $TMPBASE/game/badlands.vl2 $INSBASE/Tribes2/GameData/base/badlands.vl2
+    mv $TMPBASE/game/base.vl2 $INSBASE/Tribes2/GameData/base/base.vl2
+    mv $TMPBASE/game/cameraGrenade.cs $INSBASE/Tribes2/GameData/Classic/scripts/weapons/cameraGrenade.cs
+    mv $TMPBASE/game/CardProfiles.cs $INSBASE/Tribes2/GameData/CardProfiles.cs
+    mv $TMPBASE/game/chaingun.cs $INSBASE/Tribes2/GameData/Classic/scripts/weapons/chaingun.cs
+    mv $TMPBASE/game/chatMenuHud.cs $INSBASE/Tribes2/GameData/Classic/scripts/chatMenuHud.cs
+    mv $TMPBASE/game/Classic_dedicated_server.bat $INSBASE/Tribes2/GameData/Classic_dedicated_server.bat
+    mv $TMPBASE/game/Classic_LAN.bat $INSBASE/Tribes2/GameData/Classic_LAN.bat
+    mv $TMPBASE/game/Classic_maps_v1.vl2 $INSBASE/Tribes2/GameData/base/Classic_maps_v1.vl2
+    mv $TMPBASE/game/Classic_online.bat $INSBASE/Tribes2/GameData/Classic_online.bat
+    mv $TMPBASE/game/Classic_readme.txt $INSBASE/Tribes2/GameData/Classic/Classic_readme.txt
+    mv $TMPBASE/game/Classic_technical.txt $INSBASE/Tribes2/GameData/Classic/Classic_technical.txt
+    mv $TMPBASE/game/cloakingpack.cs $INSBASE/Tribes2/GameData/Classic/scripts/packs/cloakingpack.cs
+    mv $TMPBASE/game/console_start.cs $INSBASE/Tribes2/GameData/console_start.cs
+    mv $TMPBASE/game/creditsText.cs $INSBASE/Tribes2/GameData/Classic/scripts/creditsText.cs
+    mv $TMPBASE/game/CTFGame.cs $INSBASE/Tribes2/GameData/Classic/scripts/CTFGame.cs
+    mv $TMPBASE/game/damageTypes.cs $INSBASE/Tribes2/GameData/Classic/scripts/damageTypes.cs
+    mv $TMPBASE/game/deathMessages.cs $INSBASE/Tribes2/GameData/Classic/scripts/deathMessages.cs
+    mv $TMPBASE/game/defaultGame.cs $INSBASE/Tribes2/GameData/Classic/scripts/defaultGame.cs
+    mv $TMPBASE/game/deployables.cs $INSBASE/Tribes2/GameData/Classic/scripts/deployables.cs
+    mv $TMPBASE/game/desert.mp3 $INSBASE/Tribes2/GameData/base/music/desert.mp3
+    mv $TMPBASE/game/desert.vl2 $INSBASE/Tribes2/GameData/base/desert.vl2
+    mv $TMPBASE/game/disc.cs $INSBASE/Tribes2/GameData/Classic/scripts/weapons/disc.cs
+    mv $TMPBASE/game/DRI-Matrox.cs $INSBASE/Tribes2/GameData/DRI-Matrox.cs
+    mv $TMPBASE/game/DRI-Radeon.cs $INSBASE/Tribes2/GameData/DRI-Radeon.cs
+    mv $TMPBASE/game/DRI-Rage128.cs $INSBASE/Tribes2/GameData/DRI-Rage128.cs
+    mv $TMPBASE/game/DRI-Voodoo3.cs $INSBASE/Tribes2/GameData/DRI-Voodoo3.cs
+    mv $TMPBASE/game/DRI-Voodoo5.cs $INSBASE/Tribes2/GameData/DRI-Voodoo5.cs
+    mv $TMPBASE/game/ELFBarrelLarge.cs $INSBASE/Tribes2/GameData/Classic/scripts/turrets/ELFBarrelLarge.cs
+    mv $TMPBASE/game/ELFbarrelPack.cs $INSBASE/Tribes2/GameData/Classic/scripts/packs/ELFbarrelPack.cs
+    mv $TMPBASE/game/ELFGun.cs $INSBASE/Tribes2/GameData/Classic/scripts/weapons/ELFGun.cs
+    mv $TMPBASE/game/EULA.txt $INSBASE/Tribes2/GameData/base/EULA.txt
+    mv $TMPBASE/game/flashGrenade.cs $INSBASE/Tribes2/GameData/Classic/scripts/weapons/flashGrenade.cs
+    mv $TMPBASE/game/French\ Config.cs $INSBASE/Tribes2/GameData/base/prefs/French\ Config.cs
+    mv $TMPBASE/game/GameGui.cs $INSBASE/Tribes2/GameData/Classic/scripts/GameGui.cs
+    mv $TMPBASE/game/GeForce.cs $INSBASE/Tribes2/GameData/GeForce.cs
+    mv $TMPBASE/game/German\ config.cs $INSBASE/Tribes2/GameData/base/prefs/German\ config.cs
+    mv $TMPBASE/game/glon32.dr7 $INSBASE/Tribes2/GameData/glon32.dr7
+    mv $TMPBASE/game/GLU2D3D.dll $INSBASE/Tribes2/GameData/GLU2D3D.dll
+    mv $TMPBASE/game/grenadeLauncher.cs $INSBASE/Tribes2/GameData/Classic/scripts/weapons/grenadeLauncher.cs
+    mv $TMPBASE/game/HighProfile.cs $INSBASE/Tribes2/GameData/HighProfile.cs
+    mv $TMPBASE/game/hud.cs $INSBASE/Tribes2/GameData/Classic/scripts/hud.cs
+    mv $TMPBASE/game/ice.mp3 $INSBASE/Tribes2/GameData/base/music/ice.mp3
+    mv $TMPBASE/game/ice.vl2 $INSBASE/Tribes2/GameData/base/ice.vl2
+    mv $TMPBASE/game/IFC21.dll $INSBASE/Tribes2/GameData/IFC21.dll
+    mv $TMPBASE/game/IFC22.dll $INSBASE/Tribes2/GameData/IFC22.dll
+    mv $TMPBASE/game/indoorDeployableBarrel.cs $INSBASE/Tribes2/GameData/Classic/scripts/turrets/indoorDeployableBarrel.cs
+    mv $TMPBASE/game/Inside\ Team\ Rabbit\ 2.txt $INSBASE/Tribes2/GameData/Inside\ Team\ Rabbit\ 2.txt
+    mv $TMPBASE/game/IntelW2KCardProfiles.cs $INSBASE/Tribes2/GameData/IntelW2KCardProfiles.cs
+    mv $TMPBASE/game/IntelW95CardProfiles.cs $INSBASE/Tribes2/GameData/IntelW95CardProfiles.cs
+    mv $TMPBASE/game/IntelW98CardProfiles.cs $INSBASE/Tribes2/GameData/IntelW98CardProfiles.cs
+    mv $TMPBASE/game/IntelW98SECardProfiles.cs $INSBASE/Tribes2/GameData/IntelW98SECardProfiles.cs
+    mv $TMPBASE/game/IntelWMECardProfiles.cs $INSBASE/Tribes2/GameData/IntelWMECardProfiles.cs
+    mv $TMPBASE/game/interiors.vl2 $INSBASE/Tribes2/GameData/base/interiors.vl2
+    mv $TMPBASE/game/inventory.cs $INSBASE/Tribes2/GameData/Classic/scripts/inventory.cs
+    mv $TMPBASE/game/inventoryHud.cs $INSBASE/Tribes2/GameData/Classic/scripts/inventoryHud.cs
+    mv $TMPBASE/game/ispawn.exe $INSBASE/Tribes2/GameData/ispawn.exe
+    mv $TMPBASE/game/Italian\ Config.cs $INSBASE/Tribes2/GameData/base/prefs/Italian\ Config.cs
+    mv $TMPBASE/game/item.cs $INSBASE/Tribes2/GameData/Classic/scripts/item.cs
+    mv $TMPBASE/game/kver.pub $INSBASE/Tribes2/GameData/kver.pub
+    mv $TMPBASE/game/Kyro.cs $INSBASE/Tribes2/GameData/Kyro.cs
+    mv $TMPBASE/game/lava.vl2 $INSBASE/Tribes2/GameData/base/lava.vl2
+    mv $TMPBASE/game/LinuxCardProfiles.cs $INSBASE/Tribes2/GameData/LinuxCardProfiles.cs
+    mv $TMPBASE/game/loadingGui.cs $INSBASE/Tribes2/GameData/Classic/scripts/loadingGui.cs
+    mv $TMPBASE/game/LowProfile.cs $INSBASE/Tribes2/GameData/LowProfile.cs
+    mv $TMPBASE/game/lush.mp3 $INSBASE/Tribes2/GameData/base/music/lush.mp3
+    mv $TMPBASE/game/lush.vl2 $INSBASE/Tribes2/GameData/base/lush.vl2
+    mv $TMPBASE/game/Matrox.cs $INSBASE/Tribes2/GameData/Matrox.cs
+    mv $TMPBASE/game/MediumProfile.cs $INSBASE/Tribes2/GameData/MediumProfile.cs
+    mv $TMPBASE/game/message.cs $INSBASE/Tribes2/GameData/Classic/scripts/message.cs
+    mv $TMPBASE/game/mine.cs $INSBASE/Tribes2/GameData/Classic/scripts/weapons/mine.cs
+    mv $TMPBASE/game/minivstationx.cs $INSBASE/Tribes2/GameData/Classic/scripts/autoexec/minivstationx.cs
+    mv $TMPBASE/game/missileBarrelLarge.cs $INSBASE/Tribes2/GameData/Classic/scripts/turrets/missileBarrelLarge.cs
+    mv $TMPBASE/game/missilebarrelPack.cs $INSBASE/Tribes2/GameData/Classic/scripts/packs/missilebarrelPack.cs
+    mv $TMPBASE/game/missileLauncher.cs $INSBASE/Tribes2/GameData/Classic/scripts/weapons/missileLauncher.cs
+    mv $TMPBASE/game/missions.vl2 $INSBASE/Tribes2/GameData/base/missions.vl2
+    mv $TMPBASE/game/mortarBarrelLarge.cs $INSBASE/Tribes2/GameData/Classic/scripts/turrets/mortarBarrelLarge.cs
+    mv $TMPBASE/game/mortarBarrelPack.cs $INSBASE/Tribes2/GameData/Classic/scripts/packs/mortarBarrelPack.cs
+    mv $TMPBASE/game/mortar.cs $INSBASE/Tribes2/GameData/Classic/scripts/weapons/mortar.cs
+    mv $TMPBASE/game/Mp3dec.asi $INSBASE/Tribes2/GameData/Mp3dec.asi
+    mv $TMPBASE/game/mpbTeleporter.cs $INSBASE/Tribes2/GameData/Classic/scripts/mpbTeleporter.cs
+    mv $TMPBASE/game/Mss32.dll $INSBASE/Tribes2/GameData/Mss32.dll
+    mv $TMPBASE/game/Mssds3dh.m3d $INSBASE/Tribes2/GameData/Mssds3dh.m3d
+    mv $TMPBASE/game/Msseax2.m3d $INSBASE/Tribes2/GameData/Msseax2.m3d
+    mv $TMPBASE/game/Msseax.m3d $INSBASE/Tribes2/GameData/Msseax.m3d
+    mv $TMPBASE/game/Mssfast.m3d $INSBASE/Tribes2/GameData/Mssfast.m3d
+    mv $TMPBASE/game/Mssv12.asi $INSBASE/Tribes2/GameData/Mssv12.asi
+    mv $TMPBASE/game/Mssv24.asi $INSBASE/Tribes2/GameData/Mssv24.asi
+    mv $TMPBASE/game/Mssv29.asi $INSBASE/Tribes2/GameData/Mssv29.asi
+    mv $TMPBASE/game/MSVCRT.dll $INSBASE/Tribes2/GameData/MSVCRT.dll
+    mv $TMPBASE/game/OpenGL2D3D.dll $INSBASE/Tribes2/GameData/OpenGL2D3D.dll
+    mv $TMPBASE/game/outdoorDeployableBarrel.cs $INSBASE/Tribes2/GameData/Classic/scripts/turrets/outdoorDeployableBarrel.cs
+    mv $TMPBASE/game/Permedia3.cs $INSBASE/Tribes2/GameData/Permedia3.cs
+    mv $TMPBASE/game/plasmaBarrelLarge.cs $INSBASE/Tribes2/GameData/Classic/scripts/turrets/plasmaBarrelLarge.cs
+    mv $TMPBASE/game/plasmabarrelPack.cs $INSBASE/Tribes2/GameData/Classic/scripts/packs/plasmabarrelPack.cs
+    mv $TMPBASE/game/plasma.cs $INSBASE/Tribes2/GameData/Classic/scripts/weapons/plasma.cs
+    mv $TMPBASE/game/player.cs $INSBASE/Tribes2/GameData/Classic/scripts/player.cs
+    mv $TMPBASE/game/practice.cs $INSBASE/Tribes2/GameData/Classic/scripts/practice.cs
+    mv $TMPBASE/game/PracticeCTFGame.cs $INSBASE/Tribes2/GameData/Classic/scripts/PracticeCTFGame.cs
+    mv $TMPBASE/game/projectiles.cs $INSBASE/Tribes2/GameData/Classic/scripts/projectiles.cs
+    mv $TMPBASE/game/Radeon.cs $INSBASE/Tribes2/GameData/Radeon.cs
+    mv $TMPBASE/game/Rage128.cs $INSBASE/Tribes2/GameData/Rage128.cs
+    mv $TMPBASE/game/Readme.txt $INSBASE/Tribes2/Readme.txt
+    mv $TMPBASE/game/repairpack.cs $INSBASE/Tribes2/GameData/Classic/scripts/packs/repairpack.cs
+    mv $TMPBASE/game/Reverb3.flt $INSBASE/Tribes2/GameData/Reverb3.flt
+    mv $TMPBASE/game/satchelCharge.cs $INSBASE/Tribes2/GameData/Classic/scripts/packs/satchelCharge.cs
+    mv $TMPBASE/game/scripts.vl2 $INSBASE/Tribes2/GameData/base/scripts.vl2
+    mv $TMPBASE/game/sensorjammerpack.cs $INSBASE/Tribes2/GameData/Classic/scripts/packs/sensorjammerpack.cs
+    mv $TMPBASE/game/serverCommanderMap.cs $INSBASE/Tribes2/GameData/Classic/scripts/serverCommanderMap.cs
+    mv $TMPBASE/game/server.cs $INSBASE/Tribes2/GameData/Classic/scripts/server.cs
+    mv $TMPBASE/game/serverDefaults.cs $INSBASE/Tribes2/GameData/Classic/scripts/serverDefaults.cs
+    mv $TMPBASE/game/serverVehicleHud.cs $INSBASE/Tribes2/GameData/Classic/scripts/vehicles/serverVehicleHud.cs
+    mv $TMPBASE/game/shapes.vl2 $INSBASE/Tribes2/GameData/base/shapes.vl2
+    mv $TMPBASE/game/shockLance.cs $INSBASE/Tribes2/GameData/Classic/scripts/weapons/shockLance.cs
+    mv $TMPBASE/game/SiegeGame.cs $INSBASE/Tribes2/GameData/Classic/scripts/SiegeGame.cs
+    mv $TMPBASE/game/SierraPatch.dll $INSBASE/Tribes2/GameData/SierraPatch.dll
+    mv $TMPBASE/game/SierraPt.dll $INSBASE/Tribes2/GameData/SierraPt.dll
+    mv $TMPBASE/game/SierraUp.cfg $INSBASE/Tribes2/GameData/SierraUp.cfg
+    mv $TMPBASE/game/SierraUp.exe $INSBASE/Tribes2/GameData/SierraUp.exe
+    mv $TMPBASE/game/skins.vl2 $INSBASE/Tribes2/GameData/base/skins.vl2
+    mv $TMPBASE/game/Spanish\ Config.cs $INSBASE/Tribes2/GameData/base/prefs/Spanish\ Config.cs
+    mv $TMPBASE/game/staticShape.cs $INSBASE/Tribes2/GameData/Classic/scripts/staticShape.cs
+    mv $TMPBASE/game/station.cs $INSBASE/Tribes2/GameData/Classic/scripts/station.cs
+    mv $TMPBASE/game/SuDE.dll $INSBASE/Tribes2/GameData/SuDE.dll
+    mv $TMPBASE/game/SuES.dll $INSBASE/Tribes2/GameData/SuES.dll
+    mv $TMPBASE/game/SuFR.dll $INSBASE/Tribes2/GameData/SuFR.dll
+    mv $TMPBASE/game/SuIT.dll $INSBASE/Tribes2/GameData/SuIT.dll
+    mv $TMPBASE/game/supportClassic.cs $INSBASE/Tribes2/GameData/Classic/scripts/supportClassic.cs
+    mv $TMPBASE/game/T2IntroC15.avi $INSBASE/Tribes2/GameData/base/textures/T2IntroC15.avi
+    mv $TMPBASE/game/T2Res.dll $INSBASE/Tribes2/GameData/T2Res.dll
+    mv $TMPBASE/game/textures.vl2 $INSBASE/Tribes2/GameData/base/textures.vl2
+    mv $TMPBASE/game/TNT.cs $INSBASE/Tribes2/GameData/TNT.cs
+    mv $TMPBASE/game/TR2final093-extras.vl2 $INSBASE/Tribes2/GameData/base/TR2final093-extras.vl2
+    mv $TMPBASE/game/TR2final105-client.vl2 $INSBASE/Tribes2/GameData/base/TR2final105-client.vl2
+    mv $TMPBASE/game/TR2final105-server.vl2 $INSBASE/Tribes2/GameData/base/TR2final105-server.vl2
+    mv $TMPBASE/game/TR2HudPrefs.cs $INSBASE/Tribes2/GameData/base/prefs/TR2HudPrefs.cs
+    mv $TMPBASE/game/Tribes2.exe $INSBASE/Tribes2/GameData/Tribes2.exe
+    mv "$TMPBASE/game/Tribes2.exe.local" "$INSBASE/Tribes2/GameData/Tribes2.exe.local"
+    mv $TMPBASE/game/Tribes2.ico $INSBASE/Tribes2/GameData/base/Tribes2.ico
+    mv $TMPBASE/game/Tribes\ 2\ Manual.pdf $INSBASE/Tribes2/Manual/Tribes\ 2\ Manual.pdf
+    mv $TMPBASE/game/TribesLogin.exe $INSBASE/Tribes2/GameData/TribesLogin.exe
+    mv $TMPBASE/game/turret.cs $INSBASE/Tribes2/GameData/Classic/scripts/turret.cs
+    mv $TMPBASE/game/UKEULA.txt $INSBASE/Tribes2/GameData/base/UKEULA.txt
+    mv $TMPBASE/game/Unwise.exe $INSBASE/Tribes2/Unwise.exe
+    mv $TMPBASE/game/UpdatePatch.txt $INSBASE/Tribes2/GameData/UpdatePatch.txt
+    mv $TMPBASE/game/V2Profile.cs $INSBASE/Tribes2/GameData/V2Profile.cs
+    mv $TMPBASE/game/vehicle_bomber.cs $INSBASE/Tribes2/GameData/Classic/scripts/vehicles/vehicle_bomber.cs
+    mv $TMPBASE/game/vehicle.cs $INSBASE/Tribes2/GameData/Classic/scripts/vehicles/vehicle.cs
+    mv $TMPBASE/game/vehicle_havoc.cs $INSBASE/Tribes2/GameData/Classic/scripts/vehicles/vehicle_havoc.cs
+    mv $TMPBASE/game/vehicle_mpb.cs $INSBASE/Tribes2/GameData/Classic/scripts/vehicles/vehicle_mpb.cs
+    mv $TMPBASE/game/vehicle_shrike.cs $INSBASE/Tribes2/GameData/Classic/scripts/vehicles/vehicle_shrike.cs
+    mv $TMPBASE/game/vehicle_tank.cs $INSBASE/Tribes2/GameData/Classic/scripts/vehicles/vehicle_tank.cs
+    mv $TMPBASE/game/vehicle_wildcat.cs $INSBASE/Tribes2/GameData/Classic/scripts/vehicles/vehicle_wildcat.cs
+    mv $TMPBASE/game/Viper.cs $INSBASE/Tribes2/GameData/Viper.cs
+    mv $TMPBASE/game/voice.vl2 $INSBASE/Tribes2/GameData/base/voice.vl2
+    mv $TMPBASE/game/volcanic.mp3 $INSBASE/Tribes2/GameData/base/music/volcanic.mp3
+    mv $TMPBASE/game/Voodoo3.cs $INSBASE/Tribes2/GameData/Voodoo3.cs
+    mv $TMPBASE/game/Voodoo5.cs $INSBASE/Tribes2/GameData/Voodoo5.cs
+    mv $TMPBASE/game/WASDConfig.cs $INSBASE/Tribes2/GameData/base/prefs/WASDConfig.cs
+    mv $TMPBASE/game/weapons.cs $INSBASE/Tribes2/GameData/Classic/scripts/weapons.cs
+    mv $TMPBASE/game/weapTurretCode.cs $INSBASE/Tribes2/GameData/Classic/scripts/weapTurretCode.cs
+    mv $TMPBASE/game/zz_Classic_client_v1.vl2 $INSBASE/Tribes2/GameData/base/zz_Classic_client_v1.vl2
+    mv $TMPBASE/game/zz.ini $INSBASE/Tribes2/GameData/zz.ini
 
-echo "Removing old classic version v1.1 from base install"
-rm -rf $INSBASE/tribes2/classic
+    echo "T2 installed!"
+fi
+
+echo "Running Patches and Updates..."
+# -- install tribesnext silently
+[ -f $TMPBASE/TribesNext_rc2a.exe ] && /usr/bin/wine $TMPBASE/TribesNext_rc2a.exe /S
 
 
-echo "Installing Classic Mod v1.5.2"
+# -- extract updated linux version and replace the existing installation
+[ -f $TMPBASE/TribesNext_RC2_LinuxVersion.zip ] && /usr/bin/unzip -o $TMPBASE/TribesNext_RC2_LinuxVersion.zip -d $INSBASE/Tribes2/GameData 2>&1 > /dev/null
+
+
 # -- update Classic mod to v1.5.2
 [ -f $TMPBASE/classic_v152.zip ] && /usr/bin/unzip -o $TMPBASE/classic_v152.zip -d $TMPBASE/classic 2>&1 > /dev/null
 [ -f $TMPBASE/classic/classic_files_v152.zip ] && /usr/bin/unzip -o $TMPBASE/classic/classic_files_v152.zip -d $TMPBASE/classic 2>&1 > /dev/null
 # -- move all extract files into place
 if [ -f $TMPBASE/classic/classic_files_v152.zip ]
 then
-    mv -f $TMPBASE/classic/base/zz_classic_client_v1.vl2 $INSBASE/tribes2/base/zz_Classic_client_v1.vl2
-    cp -r $TMPBASE/classic/classic/. $INSBASE/tribes2/Classic/.
+#   /home/gameserv/.wine32/drive_c/Dynamix/Tribes2/GameData/Classic
+    mv -f $TMPBASE/classic/base/zz_classic_client_v1.vl2 $INSBASE/Tribes2/GameData/base/zz_Classic_client_v1.vl2
+    cp -r $TMPBASE/classic/classic/. $INSBASE/Tribes2/GameData/Classic/.
 fi
 
-
-# -- install LAN fix
-echo "Installing Tribes2 Lan Fix (Linux)..."
-# -- run the sh and output the patched file (tribes2d-lan.dynamic)
-if [ -f $TMPBASE/tribes2-lan-fix-linux.tar.gz ]
-then
-    mkdir -p $TMPBASE/lan-fix
-    tar -xzvf $TMPBASE/tribes2-lan-fix-linux.tar.gz -C $TMPBASE/lan-fix 2>&1 > /dev/null
-    cp -r $TMPBASE/lan-fix/. $INSBASE/tribes2/.
-    cd $INSBASE/tribes2/
-    xdelta3 decode -s tribes2d.dynamic tribes2-lan-fix-linux.xdelta tribes2d-lan.dynamic
-    chmod 755 tribes2d-lan.dynamic
-	echo "Finished setting up T2!"
-fi
-
-
-echo "Binding console.log to console.log in logs volume"
-touch $INSBASE/tribes2/console.log
-[ -f $INSBASE/tribes2/Classic/logs/console.log ] && touch $INSBASE/tribes2/Classic/logs/console.log
-ln -sf $INSBASE/tribes2/Classic/logs/console.log $INSBASE/tribes2/console.log
-
+echo "Finished setting up T2!"
 
 exit 0

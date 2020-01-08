@@ -1,18 +1,11 @@
 #!/bin/bash
 
 echo "Removing old installers"
+
+[ -f TribesNext_RC2_LinuxVersion.zip ] && rm TribesNext_RC2_LinuxVersion.zip
+[ -f TribesNext_rc2a.exe ] && rm TribesNext_rc2a.exe
 [ -f classic_v152.zip ] && rm classic_v152.zip
-[ -f t2-linux.zip ] && rm t2-linux.zip
-[ -f tribes2-lan-fix-linux.tar.gz ] && rm tribes2-lan-fix-linux.tar.gz
-echo "Done!"
-
-
-echo "Removing TacoServer TribesNext Incompatibilities"
-# Remove zAdvancedStatsLogless.vl2: causes issues connecting without TN
-rm $1/Classic/zAdvancedStatsLogless.vl2
-# Remove checkVer: Wont work anyway without TN
-rm $1/Classic/scripts/autoexec/zCheckVer.cs
-# We're using our own heartbeat to TN
-rm $1/Classic/scripts/autoexec/zAltAltHeartbeatDaemon.cs
+[ -f ruby-1.9.0-2-i386-mswin32.zip ] && rm ruby-1.9.0-2-i386-mswin32.zip
+[ -f tribes2gsi.exe ] && rm tribes2gsi.exe
 
 echo "Done!"
