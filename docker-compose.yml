@@ -52,12 +52,10 @@ services:
       T2_LoadScreenLine6: "TacoServer GitHub:"
       T2_LoadScreenLine6_Msg: "https://github.com/ChocoTaco1/TacoServer"
       T2_LoadScreenMOTD1: "Have fun!"
-      T2_LoadScreenMOTD2: "This is a Loki Linux Server!"
+      T2_LoadScreenMOTD2: " "
       T2_LoadScreenMOTD3: " "
       T2_LoadScreenMOTD4: " "
     secrets:
-      - t2.superadmin.list
-      - t2.admin.list
       - t2.admin.password
       - t2.classic.superadmin.password
       - t2.classic.telnet.password
@@ -74,9 +72,9 @@ services:
         mode: host
 
     volumes:
-      - serverStats:/home/gameserv/.loki/tribes2/Classic/serverStats
-      - stats:/home/gameserv/.loki/tribes2/Classic/stats
-      - logs:/home/gameserv/.loki/tribes2/Classic/logs
+      - serverStats:/home/gameserv/.wine/drive_c/Dynamix/Tribes2/GameData/Classic/serverStats
+      - stats:/home/gameserv/.wine/drive_c/Dynamix/Tribes2/GameData/Classic/stats
+      - logs:/home/gameserv/.wine/drive_c/Dynamix/Tribes2/GameData/Classic/logs
                    
     networks:
       - t2-net
