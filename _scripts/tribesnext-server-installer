@@ -270,6 +270,11 @@ then
     cp -r $TMPBASE/classic/classic/. $INSBASE/Tribes2/GameData/Classic/.
 fi
 
+echo "Binding console.log to console.log in logs volume"
+touch $INSBASE/tribes2/console.log
+[ -f $INSBASE/tribes2/Classic/logs/console.log ] && touch $INSBASE/tribes2/Classic/logs/console.log
+ln -sf $INSBASE/tribes2/Classic/logs/console.log $INSBASE/tribes2/console.log
+
 echo "Finished setting up T2!"
 
 exit 0
