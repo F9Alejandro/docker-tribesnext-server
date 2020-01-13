@@ -16,7 +16,7 @@ WORKDIR /tmp
 
 
 # Main Game Server Image
-FROM i386/ubuntu:disco
+FROM i386/ubuntu:xenial
 LABEL maintainer="sairuk, amineo, chocotaco"
 
 # ENVIRONMENT
@@ -43,7 +43,7 @@ sudo unzip \
 # -- logging
 rsyslog \
 # -- utilities
-sed less nano vim file wget gnupg2 software-properties-common \
+sed less nano vim file wget gnupg2 software-properties-common apt-transport-https \
 # --- wine
 #${WINEVER} \
 # -- display
@@ -51,8 +51,8 @@ xvfb
 
 RUN wget --no-check-certificate https://dl.winehq.org/wine-builds/winehq.key
 RUN apt-key add winehq.key
-RUN add-apt-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ bionic main'
-RUN add-apt-repository ppa:cybermax-dexter/sdl2-backport
+RUN add-apt-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ xenial main'
+#RUN add-apt-repository ppa:cybermax-dexter/sdl2-backport
 RUN apt-get -y update && apt-get -y upgrade && apt-get -y install --install-recommends winehq-devel
 
 
