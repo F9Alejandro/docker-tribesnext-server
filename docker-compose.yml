@@ -72,9 +72,9 @@ services:
         mode: host
 
     volumes:
-      - serverStats:/home/gameserv/.wine/drive_c/Dynamix/Tribes2/GameData/Classic/serverStats
-      - stats:/home/gameserv/.wine/drive_c/Dynamix/Tribes2/GameData/Classic/stats
-      - logs:/home/gameserv/.wine/drive_c/Dynamix/Tribes2/GameData/Classic/logs
+      - serverStats:/home/gameserv/.wine32/drive_c/Dynamix/Tribes2/GameData/Classic/serverStats
+      - stats:/home/gameserv/.wine32/drive_c/Dynamix/Tribes2/GameData/Classic/stats
+      - logs:/home/gameserv/.wine32/drive_c/Dynamix/Tribes2/GameData/Classic/logs
                    
     networks:
       - t2-net
