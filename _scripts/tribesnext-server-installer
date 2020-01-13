@@ -46,7 +46,7 @@ then
     mkdir -p $INSBASE/Tribes2/Manual
     mkdir -p $INSBASE/Tribes2/GameData/base/{music,lighting,textures,prefs}
     mkdir -p $INSBASE/Tribes2/GameData/Classic/scripts/{turrets,weapons,autoexec,packs,vehicles}
-	mkdir -p $INSBASE/tribes2/Classic/{logs,stats,serverStats}
+	mkdir -p $INSBASE/Tribes2/Classic/{logs,stats,serverStats}
 fi
 
 
