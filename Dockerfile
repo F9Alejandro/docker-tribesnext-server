@@ -43,17 +43,40 @@ sudo unzip \
 # -- logging
 rsyslog \
 # -- utilities
-sed less nano vim file wget gnupg2 software-properties-common \
+sed less nano vim file wget gnupg2 software-properties-common git \
 # --- wine
 #${WINEVER} \
 # -- display
 xvfb
 
+# GET WINE
 RUN wget --no-check-certificate https://dl.winehq.org/wine-builds/winehq.key
 RUN apt-key add winehq.key
-RUN add-apt-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ bionic main'
+RUN add-apt-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ disco main'
 RUN add-apt-repository ppa:cybermax-dexter/sdl2-backport
 RUN apt-get -y update && apt-get -y upgrade && apt-get -y install --install-recommends winehq-devel
+
+
+# INSTALL GAMEMODE
+#RUN add-apt-repository ppa:samoilov-lex/gamemode
+#RUN apt-get -y update && apt-get -y install dbus-user-session gamemode
+
+
+# BUILD WINE FROM SOURCE
+#RUN apt-get -y remove winehq-devel
+#RUN apt-get install -y flex bison gcc-multilib xserver-xorg-dev libgstreamer1.0-dev \
+#libgstreamer-plugins-base1.0-dev libxcursor-dev libxi-dev libxxf86vm-dev libxrandr-dev libxfixes-dev \
+#libxinerama-dev libxcomposite-dev libglu1-mesa-dev libosmesa6-dev opencl-headers libpcap-dev libdbus-1-dev \
+#libncurses5-dev libsane-dev libv4l-dev libgphoto2-dev libpulse-dev libudev-dev libcups2-dev libfontconfig1-dev \
+#libgsm1-dev libmpg123-dev libopenal-dev libldap2-dev libxrender-dev libopengl0 libxslt1-dev libgnutls28-dev \
+#libjpeg-dev libva-dev xorg-dev libx11-dev libx11-dev:i386 libfreetype6-dev:i386 winbind gstreamer-1.0 \
+#libgstreamer-plugins-base1.0-dev:i386
+#RUN git clone git://source.winehq.org/git/wine.git ~/wine-dirs/wine-source
+#RUN cd ~/wine-dirs/wine-source
+#RUN sh ~/wine-dirs/wine-source/configure --prefix=/usr --libdir=/usr/lib --with-x --with-gstreamer --enable-win64
+#RUN sh ~/wine-dirs/wine-source/configure --prefix=/usr --libdir=/usr/lib32 --with-x
+#RUN make -j4 
+#RUN make install
 
 
 # CLEAN IMAGE
