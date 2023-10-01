@@ -11,12 +11,12 @@ WORKDIR /tmp
 RUN git clone --depth 1 "https://github.com/ChocoTaco1/TacoServer/" && cd ./TacoServer
 WORKDIR /tmp
 
-RUN git clone --depth 1 "https://github.com/ChocoTaco1/TacoMaps/"  && cd ./TacoMaps 
+RUN git clone --depth 1 "https://github.com/ChocoTaco1/TacoMaps/"  && cd ./TacoMaps
 WORKDIR /tmp
 
 
 # Main Game Server Image
-FROM i386/ubuntu:disco
+FROM i386/debian:bookworm
 LABEL maintainer="sairuk, amineo, chocotaco"
 
 # ENVIRONMENT
@@ -43,19 +43,18 @@ sudo unzip \
 # -- logging
 rsyslog \
 # -- utilities
-sed less nano vim file wget gnupg2 software-properties-common git \
+sed less nano vim file wget gnupg2 software-properties-common git htop \
 # --- wine
 #${WINEVER} \
 # -- display
 xvfb
 
 # GET WINE
-RUN wget --no-check-certificate https://dl.winehq.org/wine-builds/winehq.key
-RUN apt-key add winehq.key
-RUN add-apt-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ disco main'
-RUN add-apt-repository ppa:cybermax-dexter/sdl2-backport
-RUN apt-get -y update && apt-get -y upgrade && apt-get -y install --install-recommends winehq-devel
-
+RUN mkdir -pm755 /etc/apt/keyrings
+RUN wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key
+RUN wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/debian/dists/bookworm/winehq-bookworm.sources
+RUN apt-get -y update && apt-get -y upgrade
+RUN apt-get -y install --install-recommends winehq-devel
 
 # INSTALL GAMEMODE
 #RUN add-apt-repository ppa:samoilov-lex/gamemode
@@ -75,7 +74,7 @@ RUN apt-get -y update && apt-get -y upgrade && apt-get -y install --install-reco
 #RUN cd ~/wine-dirs/wine-source
 #RUN sh ~/wine-dirs/wine-source/configure --prefix=/usr --libdir=/usr/lib --with-x --with-gstreamer --enable-win64
 #RUN sh ~/wine-dirs/wine-source/configure --prefix=/usr --libdir=/usr/lib32 --with-x
-#RUN make -j4 
+#RUN make -j4
 #RUN make install
 
 
@@ -134,7 +133,7 @@ RUN chown -R ${SRVUSER}: /home/${SRVUSER}
 EXPOSE \
 # -- tribes
 666/tcp \
-28000/udp 
+28000/udp
 
 USER ${SRVUSER}
 WORKDIR ${INSTDIR}

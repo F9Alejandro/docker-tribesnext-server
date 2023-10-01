@@ -10,7 +10,7 @@ echo "Finished!"
 
 find ${BASEDIR} -name \*.dso -execdir /bin/rm {} \;
 
-cd $WINEPREFIX/drive_c/Dynamix/Tribes2/GameData 
+cd $WINEPREFIX/drive_c/Dynamix/Tribes2/GameData
 
 wine --version
 

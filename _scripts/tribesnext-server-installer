@@ -52,10 +52,11 @@ fi
 
 
 # -- download files
-get_files tribes2gsi.exe                      "https://www.the-construct.net/downloads/tribes2/"                "$TMPBASE"
-get_files TribesNext_rc2a.exe                 "https://www.tribesnext.com/files/"                               "$TMPBASE"
-get_files TribesNext_RC2_LinuxVersion.zip     "https://lutris.net/files/games/tribes-2/"                        "$TMPBASE"
-get_files classic_v152.zip                    "https://tribes2stats.com/files/mods/"                            "$TMPBASE"
+get_files tribes2gsi.exe                      "https://www.the-construct.net/downloads/tribes2/"                    "$TMPBASE"
+get_files TribesNext_rc2a.exe                 "https://www.tribesnext.com/files/"                                   "$TMPBASE"
+get_files msvcrt-ruby190.zip                  "https://www.dropbox.com/s/bvh9631a4mtuisf/msvcrt-ruby190.zip"        "$TMPBASE"
+get_files classic_v152.zip                    "https://tribes2stats.com/files/mods/"                                "$TMPBASE"
+
 
 # -- some items require an headerless
 export DISPLAY=:99
@@ -255,10 +256,8 @@ echo "Running Patches and Updates..."
 # -- install tribesnext silently
 [ -f $TMPBASE/TribesNext_rc2a.exe ] && /usr/bin/wine $TMPBASE/TribesNext_rc2a.exe /S
 
-
-# -- extract updated linux version and replace the existing installation
-[ -f $TMPBASE/TribesNext_RC2_LinuxVersion.zip ] && /usr/bin/unzip -o $TMPBASE/TribesNext_RC2_LinuxVersion.zip -d $INSBASE/Tribes2/GameData 2>&1 > /dev/null
-
+# -- extract updated msvcrt and replace the existing installation
+[ -f $TMPBASE/msvcrt-ruby190.zip ] && /usr/bin/unzip -o $TMPBASE//msvcrt-ruby190.zip -d $INSBASE/Tribes2/GameData 2>&1 > /dev/null
 
 # -- update Classic mod to v1.5.2
 [ -f $TMPBASE/classic_v152.zip ] && /usr/bin/unzip -o $TMPBASE/classic_v152.zip -d $TMPBASE/classic 2>&1 > /dev/null
