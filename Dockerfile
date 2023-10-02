@@ -34,6 +34,7 @@ ENV WINEPREFIX=/home/${SRVUSER}/.wine32/
 
 # UPDATE IMAGE
 RUN dpkg --add-architecture i386
+RUN echo "deb http://deb.debian.org/debian bookworm contrib" > /etc/apt/sources.list
 RUN apt-get -y update && apt-get -y upgrade
 
 # DEPENDENCIES
@@ -43,7 +44,7 @@ sudo unzip \
 # -- logging
 rsyslog \
 # -- utilities
-sed less nano vim file wget gnupg2 software-properties-common git htop \
+sed less nano vim file wget gnupg2 software-properties-common git htop winetricks curl \
 # --- wine
 #${WINEVER} \
 # -- display

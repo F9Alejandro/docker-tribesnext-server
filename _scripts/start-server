@@ -15,4 +15,4 @@ cd $WINEPREFIX/drive_c/Dynamix/Tribes2/GameData
 wine --version
 
 echo "Running the Tribes 2 server"
-xvfb-run -a -w 5 taskset -c 0 wine Tribes2.exe 28000 -dedicated -mod Classic
+xvfb-run -a -w 5 taskset -c 0 wine wine_injector.exe Server.dll Tribes2.exe 28000 -dedicated -mod Classic

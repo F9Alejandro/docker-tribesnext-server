@@ -38,6 +38,29 @@ function get_files {
 
 check_requirements
 
+# -- download files
+get_files tribes2gsi.exe                      "https://www.the-construct.net/downloads/tribes2/"                    "$TMPBASE"
+get_files TribesNext_rc2a.exe                 "https://www.tribesnext.com/files/"                                   "$TMPBASE"
+get_files msvcrt-ruby190.zip                  "https://www.dropbox.com/s/bvh9631a4mtuisf/msvcrt-ruby190.zip"        "$TMPBASE"
+get_files classic_v152.zip                    "https://tribes2stats.com/files/mods/"                                "$TMPBASE"
+#get_files vcrun22-wine.zip                    "https://www.dropbox.com/scl/fi/3stiwbakjom75l1hgjgql/vcrun22-wine.zip?rlkey=tv15a6fqfllma61mfegrz7l7s&"    "$TMPBASE"
+get_files t2-auth-faster.zip                  "https://cdn.discordapp.com/attachments/1154920105097040023/1154923875562422382/t2-auth-faster.zip?ex=6518b0ad&is=65175f2d&hm=5be90f772b1c0a0046331ffce8350a9c686ba242dcaa7a2350ebd433798f81cc&"  "$TMPBASE"
+get_files vcrun22.zip                         "https://cdn.discordapp.com/attachments/521797012014759970/1158166748441354401/vcrun22.zip?ex=651b4256&is=6519f0d6&hm=daccf567aa7b663ee0bfb93663a5b21a61ef4f97fc42dd5aa35e84bffd3e2a3c&"  "$TMPBASE"
+
+# -- some items require an headerless
+export DISPLAY=:99
+[ ! $(pidof Xvfb) ] && Xvfb :99 -screen 0 640x480x8 -nolisten tcp & 2>&1 > /dev/null
+
+
+# -- gimme a little time
+sleep 1
+
+# -- Needed for loops sha1 fix...vcrun22 framework. Cant install thru winetricks
+#echo "Setting up vcrun22 wine folder..."
+#[ -f $TMPBASE/vcrun22-wine.zip ] && /usr/bin/unzip -o $TMPBASE/vcrun22-wine.zip -d $TMPBASE 2>&1 > /dev/null
+#rm -r $WINEPREFIX && mkdir -p $WINEPREFIX
+#cp -r $TMPBASE/vcrun22-wine/. $WINEPREFIX/.
+
 # -- make directories
 [ ! -d $TMPBASE ] && mkdir -p $TMPBASE
 
@@ -48,24 +71,6 @@ then
     mkdir -p $INSBASE/Tribes2/GameData/Classic/scripts/{turrets,weapons,autoexec,packs,vehicles}
 	mkdir -p $INSBASE/Tribes2/GameData/Classic/{logs,stats,serverStats}
 fi
-
-
-
-# -- download files
-get_files tribes2gsi.exe                      "https://www.the-construct.net/downloads/tribes2/"                    "$TMPBASE"
-get_files TribesNext_rc2a.exe                 "https://www.tribesnext.com/files/"                                   "$TMPBASE"
-get_files msvcrt-ruby190.zip                  "https://www.dropbox.com/s/bvh9631a4mtuisf/msvcrt-ruby190.zip"        "$TMPBASE"
-get_files classic_v152.zip                    "https://tribes2stats.com/files/mods/"                                "$TMPBASE"
-
-
-# -- some items require an headerless
-export DISPLAY=:99
-[ ! $(pidof Xvfb) ] && Xvfb :99 -screen 0 640x480x8 -nolisten tcp & 2>&1 > /dev/null
-
-
-# -- gimme a little time
-sleep 1
-
 
 # -- extract the main installer, the silent installer is a lie!
 echo "Installing T2..."
@@ -257,7 +262,7 @@ echo "Running Patches and Updates..."
 [ -f $TMPBASE/TribesNext_rc2a.exe ] && /usr/bin/wine $TMPBASE/TribesNext_rc2a.exe /S
 
 # -- extract updated msvcrt and replace the existing installation
-[ -f $TMPBASE/msvcrt-ruby190.zip ] && /usr/bin/unzip -o $TMPBASE//msvcrt-ruby190.zip -d $INSBASE/Tribes2/GameData 2>&1 > /dev/null
+[ -f $TMPBASE/msvcrt-ruby190.zip ] && /usr/bin/unzip -o $TMPBASE/msvcrt-ruby190.zip -d $INSBASE/Tribes2/GameData 2>&1 > /dev/null
 
 # -- update Classic mod to v1.5.2
 [ -f $TMPBASE/classic_v152.zip ] && /usr/bin/unzip -o $TMPBASE/classic_v152.zip -d $TMPBASE/classic 2>&1 > /dev/null
@@ -269,6 +274,55 @@ then
     mv -f $TMPBASE/classic/base/zz_classic_client_v1.vl2 $INSBASE/Tribes2/GameData/base/zz_Classic_client_v1.vl2
     cp -r $TMPBASE/classic/classic/. $INSBASE/Tribes2/GameData/Classic/.
 fi
+
+# -- extract loops sha1 fix
+[ -f $TMPBASE/t2-auth-faster.zip ] && /usr/bin/unzip -o $TMPBASE/t2-auth-faster.zip -d $TMPBASE/t2-auth-faster 2>&1 > /dev/null
+cp -r $TMPBASE/t2-auth-faster/Server.dll $INSBASE/Tribes2/GameData/Server.dll
+cp -r $TMPBASE/t2-auth-faster/t2csri_serverside_looped.cs $INSBASE/Tribes2/GameData/Classic/scripts/autoexec/t2csri_serverside_looped.cs
+cp -r $TMPBASE/t2-auth-faster/wine_injector.exe $INSBASE/Tribes2/GameData/wine_injector.exe
+
+# -- extract needed vcrun22 dlls
+[ -f $TMPBASE/vcrun22.zip  ] && /usr/bin/unzip -o $TMPBASE/vcrun22.zip  -d $TMPBASE/vcrun22 2>&1 > /dev/null
+cp -r $TMPBASE/vcrun22/dlls/. $WINEPREFIX/drive_c/windows/system32/.
+echo "[Software\\Microsoft\\Windows\\CurrentVersion\\Installer\\UserData\\S-1-5-18\\Components\\27942822A4C04B13EAFEF97C95F63150] 1695592404
+#time=1d9ef318acfaa9a
+"F2E91D5D9817EF24183029DCF14A752C"="C:\\windows\\system32\\msvcp140.dll"
+
+[Software\\Microsoft\\Windows\\CurrentVersion\\Installer\\UserData\\S-1-5-18\\Components\\2D1C5B53B5BE965338BE873EF4C52345] 1695592404
+#time=1d9ef318ad00ec2
+"F2E91D5D9817EF24183029DCF14A752C"="C:\\windows\\system32\\concrt140.dll"
+
+[Software\\Microsoft\\Windows\\CurrentVersion\\Installer\\UserData\\S-1-5-18\\Components\\D8553176F1EDC3731AD2AB9E0064759F] 1695592404
+#time=1d9ef318acfc4f8
+"F2E91D5D9817EF24183029DCF14A752C"="C:\\windows\\system32\\msvcp140_1.dll"
+
+[Software\\Microsoft\\Windows\\CurrentVersion\\Installer\\UserData\\S-1-5-18\\Components\\6C9340DAD3CDC2A3FA832B02388D36F9] 1695592404
+#time=1d9ef318acfd4de
+"F2E91D5D9817EF24183029DCF14A752C"="C:\\windows\\system32\\msvcp140_2.dll"
+
+[Software\\Microsoft\\Windows\\CurrentVersion\\Installer\\UserData\\S-1-5-18\\Components\\FD2EFD8F5E4F5484898282946C589AB1] 1695592404
+#time=1d9ef318acfe456
+"F2E91D5D9817EF24183029DCF14A752C"="C:\\windows\\system32\\msvcp140_atomic_wait.dll"
+
+[Software\\Microsoft\\Windows\\CurrentVersion\\Installer\\UserData\\S-1-5-18\\Components\\1EA31416F42045848B8DD1E28F10CE12] 1695592404
+#time=1d9ef318acffeb4
+"F2E91D5D9817EF24183029DCF14A752C"="C:\\windows\\system32\\msvcp140_codecvt_ids.dll"
+
+[Software\\Microsoft\\Windows\\CurrentVersion\\Installer\\UserData\\S-1-5-18\\Components\\E9820507FCEB7C2398CD804C84E084B2] 1695592404
+#time=1d9ef318ad02e52
+"F2E91D5D9817EF24183029DCF14A752C"="C:\\windows\\system32\\vcamp140.dll"
+
+[Software\\Microsoft\\Windows\\CurrentVersion\\Installer\\UserData\\S-1-5-18\\Components\\FD7D722D8F9DFA339B53B42F4FF7E24A] 1695592404
+#time=1d9ef318ad01f3e
+"F2E91D5D9817EF24183029DCF14A752C"="C:\\windows\\system32\\vccorlib140.dll"
+
+[Software\\Microsoft\\Windows\\CurrentVersion\\Installer\\UserData\\S-1-5-18\\Components\\69D89E5FF7C37D7328F14EBB304D83B4] 1695592404
+#time=1d9ef318ad03d8e
+"F2E91D5D9817EF24183029DCF14A752C"="C:\\windows\\system32\\vcomp140.dll"
+
+[Software\\Microsoft\\Windows\\CurrentVersion\\Installer\\UserData\\S-1-5-18\\Components\\DF85233BC05724B3B84E35B5849ED74B] 1695592404
+#time=1d9ef318acf8362
+"F2E91D5D9817EF24183029DCF14A752C"="C:\\windows\\system32\\vcruntime140.dll"" > $WINEPREFIX/system.reg
 
 echo "Binding console.log to console.log in logs volume"
 touch $INSBASE/Tribes2/GameData/console.log
