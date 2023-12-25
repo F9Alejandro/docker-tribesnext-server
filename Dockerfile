@@ -20,7 +20,7 @@ FROM i386/debian:bookworm
 LABEL maintainer="sairuk, amineo, chocotaco"
 
 # ENVIRONMENT
-ARG SRVUSER=gameserv
+ARG SRVUSER=container
 ARG SRVUID=1000
 ARG SRVDIR=/tmp/tribes2/
 ENV INSTDIR=/home/${SRVUSER}/.wine32/drive_c/Dynamix/Tribes2/
@@ -93,7 +93,7 @@ RUN useradd -m -s /bin/bash -u ${SRVUID} ${SRVUSER}
 # -- temporarily steal ownership
 RUN chown -R root: /home/${SRVUSER}
 # -- set wine win32 env
-RUN WINEARCH=win32 WINEPREFIX=/home/gameserv/.wine32/ wine wineboot
+RUN WINEARCH=win32 WINEPREFIX=/home/${SRVUSER}/.wine32/ wine wineboot
 
 # SCRIPT - installer
 COPY _scripts/tribesnext-server-installer ${SRVDIR}
@@ -131,13 +131,17 @@ RUN chown -R ${SRVUSER}: /home/${SRVUSER}
 
 
 # PORTS
-EXPOSE \
+#EXPOSE \
 # -- tribes
-666/tcp \
-28000/udp
+#666/tcp \
+#28000/udp
 
 USER ${SRVUSER}
+ENV USER=container HOME=/home/container
 WORKDIR ${INSTDIR}
 
-CMD ["./start-server"]
+COPY ./entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+CMD ["/bin/bash","/entrypoint.sh"]
 

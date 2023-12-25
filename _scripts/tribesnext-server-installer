@@ -6,7 +6,7 @@
 # -- author: sairuk
 #
 
-SRVUSER=gameserv
+SRVUSER=container
 INSBASE=/home/$SRVUSER/.wine32/drive_c/Dynamix/
 export TMPBASE=/tmp/tribes2
 export WINEARCH=win32
