@@ -1,15 +1,16 @@
 #!/bin/bash
 
 # - GIT -- Grab Maps and Server modifications from Github to tmp directory
-cd /tmp && git clone --depth 1 "https://github.com/ChocoTaco1/TacoServer/" && cd ./TasoServer
-cd /tmp && git clone --depth 1 "https://github.com/ChocoTaco1/TacoMaps/"  && cd ./TacoMaps
+cd /home/container/.tmp && git clone --depth 1 "https://github.com/ChocoTaco1/TacoServer/" && cd ./TacoServer
+cd /home/container/.tmp && git clone --depth 1 "https://github.com/ChocoTaco1/TacoMaps/"  && cd ./TacoMaps
 
 # - GIT Scripts -- Get the git scripts from the github with all the modifications
-cd /home/container && git clone --depth 1 "https://github.com/F9Alejandro/docker-tribesnext-server.git" docker-tn-srv && cd ./docker-tn-srv && git checkout Wine
+cd /home/container && git clone --depth 1 "https://github.com/F9Alejandro/docker-tribesnext-server.git" docker-tn-srv
+cd ./docker-tn-srv && git checkout Wine
 
-mkdir /tmp/tribes2
+mkdir /home/container/.tmp/tribes2
 
-SVRDIR=/tmp/tribes2
+SVRDIR=/home/container/.tmp/tribes2
 INSTDIR=/home/container/.wine32/drive_c/Dynamix/Tribes2
 
 # - SETUP -- Set wine win32 env
@@ -18,7 +19,7 @@ export WINEPREFIX=/home/container/.wine32/
 wine wineboot
 
 # - SCRIPT -- Installer
-cp _scripts/tribesnext-server-installer ${SRVDIR}
+cp _scripts/tribesnext-server-installer ${SRVDIR}/
 chmod +x ${SRVDIR}/tribesnext-server-installer
 ${SRVDIR}/tribesnext-server-installer
 
@@ -33,10 +34,10 @@ ${SRVDIR}/cleanup
 
 # - TacoServer -- Pull in resources from builder (/tmp)
 cp /tmp/TacoServer/Classic/. ${INSTDIR}/GameData/Classic/.
-cp /tmp/TacoMaps/. ${INSTDIR}/GameData/Classic/Maps/
+cp /tmp/TacoMaps/ ${INSTDIR}/GameData/Classic/Maps/
 
 # - SCRIPT -- Custom (custom content / overrides)
-cp _custom/. ${INSTDIR}
+cp _custom/. ${INSTDIR}/
 
 # - SCRIPT - Expand Admin Prefs
 cp _scripts/cfg_admin_prefs ${SRVDIR}

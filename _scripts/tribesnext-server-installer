@@ -8,7 +8,7 @@
 
 SRVUSER=container
 INSBASE=/home/$SRVUSER/.wine32/drive_c/Dynamix/
-export TMPBASE=/tmp/tribes2
+export TMPBASE=/home/container/.tmp/tribes2
 export WINEARCH=win32
 export WINEPREFIX=/home/$SRVUSER/.wine32/
 export REQUIREMENTS=(wine Xvfb)

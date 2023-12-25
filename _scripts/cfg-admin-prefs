@@ -1,24 +1,24 @@
 #!/bin/bash
 
-SRVUSER=gameserv
+SRVUSER=container
 ADMINPREFS_FILE=/home/$SRVUSER/.wine32/drive_c/Dynamix/Tribes2/GameData/Classic/scripts/autoexec/AdminPrefs.cs
 SECRETS=/run/secrets
 
 # -- set Admin Password
-cat ${SECRETS}/t2.admin.password >> $ADMINPREFS_FILE
-printf "\n" >> $ADMINPREFS_FILE
+#cat ${SECRETS}/t2.admin.password >> $ADMINPREFS_FILE
+#printf "\n" >> $ADMINPREFS_FILE
 
 # -- set classic SA PW
-cat ${SECRETS}/t2.classic.superadmin.password >> $ADMINPREFS_FILE
-printf "\n" >> $ADMINPREFS_FILE
+#cat ${SECRETS}/t2.classic.superadmin.password >> $ADMINPREFS_FILE
+#printf "\n" >> $ADMINPREFS_FILE
 
 # -- set classic telnet listen password
-cat ${SECRETS}/t2.classic.telnet.listen.password >> $ADMINPREFS_FILE
-printf "\n" >> $ADMINPREFS_FILE
+#cat ${SECRETS}/t2.classic.telnet.listen.password >> $ADMINPREFS_FILE
+#printf "\n" >> $ADMINPREFS_FILE
 
 # -- set classic telnet password
-cat ${SECRETS}/t2.classic.telnet.password >> $ADMINPREFS_FILE
-printf "\n" >> $ADMINPREFS_FILE
+#cat ${SECRETS}/t2.classic.telnet.password >> $ADMINPREFS_FILE
+#printf "\n" >> $ADMINPREFS_FILE
 
 
 # -- set sa/admin lists
