@@ -13,12 +13,14 @@ SVRDIR=/tmp/tribes2
 INSTDIR=/home/container/.wine32/drive_c/Dynamix/Tribes2
 
 # - SETUP -- Set wine win32 env
-exec WINEARCH=win32 WINEPREFIX=/home/container/.wine32/ wine wineboot
+export WINEARCH=win32 
+export WINEPREFIX=/home/container/.wine32/ 
+wine wineboot
 
 # - SCRIPT -- Installer
 cp _scripts/tribesnext-server-installer ${SRVDIR}
 chmod +x ${SRVDIR}/tribesnext-server-installer
-exec ${SRVDIR}/tribesnext-server-installer
+${SRVDIR}/tribesnext-server-installer
 
 # - SCRIPT -- Server (default)
 cp _script/start-server ${INSTDIR}/start-server
@@ -27,7 +29,7 @@ chmod +x ${INSTDIR}/start-server
 # - Clean up TMP
 cp _scripts/cleanup ${SRVDIR}
 chmod +x ${SRVDIR}/cleanup
-exec ${SRVDIR}/cleanup
+${SRVDIR}/cleanup
 
 # - TacoServer -- Pull in resources from builder (/tmp)
 cp /tmp/TacoServer/Classic/. ${INSTDIR}/GameData/Classic/.
