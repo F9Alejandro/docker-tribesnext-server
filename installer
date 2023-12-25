@@ -10,7 +10,7 @@ cd ${WORKIN_DIR}/.tmp && git clone --depth 1 "https://github.com/ChocoTaco1/Taco
 cd ${WORKIN_DIR}
 git clone "https://github.com/F9Alejandro/docker-tribesnext-server.git" docker-tn-srv
 cd ./docker-tn-srv
-git checkout wine
+git checkout Wine
 
 mkdir /home/container/.tmp/tribes2
 
