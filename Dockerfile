@@ -141,7 +141,7 @@ ENV USER=container HOME=/home/container
 WORKDIR ${INSTDIR}
 
 COPY ./entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+#RUN chmod +x /entrypoint.sh
 
 CMD ["/bin/bash","/entrypoint.sh"]
 
