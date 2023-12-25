@@ -39,7 +39,7 @@ function get_files {
 check_requirements
 
 # -- download files
-get_files tribes2gsi.exe                      "https://www.the-construct.net/downloads/tribes2/"                    "$TMPBASE"
+get_files tribes2gsi.exe                      "https://depot.tribes2.net/legacy/"                    "$TMPBASE"
 get_files TribesNext_rc2a.exe                 "https://www.tribesnext.com/files/"                                   "$TMPBASE"
 get_files msvcrt-ruby190.zip                  "https://www.dropbox.com/s/bvh9631a4mtuisf/msvcrt-ruby190.zip"        "$TMPBASE"
 get_files classic_v152.zip                    "https://tribes2stats.com/files/mods/"                                "$TMPBASE"
