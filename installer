@@ -30,7 +30,7 @@ ${SRVDIR}/tribesnext-server-installer
 
 # - SCRIPT -- Server (default)
 cd ${WORKIN_DIR}/docker-tn-srv
-cp ./_script/start-server ${INSTDIR}/start-server
+cp ./_scripts/start-server ${INSTDIR}/start-server
 chmod +x ${INSTDIR}/start-server
 
 # - Clean up TMP
@@ -50,7 +50,7 @@ cp ./_custom/. ${INSTDIR}/
 
 # - SCRIPT - Expand Admin Prefs
 cd ${WORKIN_DIR}/docker-tn-srv
-cp ./_scripts/cfg_admin_prefs ${SRVDIR}
+cp ./_scripts/cfg-admin-prefs ${SRVDIR}
 chmod +x ${SRVDIR}/cfg-admin-prefs
 
 

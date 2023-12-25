@@ -89,7 +89,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # USER
 # -- add the user, expose datastore
-RUN useradd -m -s /bin/bash -u ${SRVUID} ${SRVUSER}
+RUN adduser --disabled-password --home /home/container container
 # -- temporarily steal ownership
 #RUN chown -R root: /home/${SRVUSER}
 # -- set wine win32 env
@@ -138,7 +138,7 @@ RUN useradd -m -s /bin/bash -u ${SRVUID} ${SRVUSER}
 
 USER ${SRVUSER}
 ENV USER=container HOME=/home/container
-WORKDIR ${INSTDIR}
+WORKDIR /home/container
 
 COPY ./entrypoint.sh /entrypoint.sh
 #RUN chmod +x /entrypoint.sh

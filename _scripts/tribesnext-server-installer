@@ -66,6 +66,7 @@ sleep 1
 
 if [ ! -d $INSBASE ]
 then
+    echo "Parent/Child - Making Directories"
     mkdir -p $INSBASE/Tribes2/Manual
     mkdir -p $INSBASE/Tribes2/GameData/base/{music,lighting,textures,prefs}
     mkdir -p $INSBASE/Tribes2/GameData/Classic/scripts/{turrets,weapons,autoexec,packs,vehicles}
@@ -74,8 +75,10 @@ fi
 
 # -- extract the main installer, the silent installer is a lie!
 echo "Installing T2..."
-/usr/bin/wine $TMPBASE/tribes2gsi.exe /x Z:\\home\\container\\.tmp\\tribes2\\game
+wine $TMPBASE/tribes2gsi.exe /x Z:\\home\\container\\.tmp\\tribes2\\game
 
+# -- Lets try another wait here as we have issues
+sleep 1
 
 # -- move all extract files into place
 if [ -f $TMPBASE/game/Tribes2.exe ]
