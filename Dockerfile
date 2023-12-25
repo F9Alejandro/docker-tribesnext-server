@@ -22,11 +22,11 @@ FROM i386/debian:bookworm
 LABEL maintainer="sairuk, battlelore, chocotaco"
 
 # ENVIRONMENT
-ARG SRVUSER=gameserv
+ARG SRVUSER=container
 ARG SRVUID=1000
 ARG SRVDIR=/tmp/tribes2/
 ENV INSTDIR=/home/${SRVUSER}/.loki/tribes2/
-ENV TZ="America/New_York"
+#ENV TZ="America/New_York"
 # -- shutup installers
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -51,7 +51,7 @@ RUN apt-get -y clean && apt-get -y autoremove
 
 # USER
 # -- add the user, expose datastore
-RUN useradd -m -s /bin/bash -u ${SRVUID} ${SRVUSER}
+RUN adduser -D -h /home/container container
 # -- temporarily steal ownership
 RUN chown -R root: /home/${SRVUSER}
 
@@ -106,7 +106,10 @@ EXPOSE \
 28000/udp
 
 USER ${SRVUSER}
-WORKDIR ${INSTDIR}
+ENV USER=container HOME=/home/container
+WORKDIR /home/${SRVUSER}
 
-CMD ["./start-server"]
+COPY --chown=container:container ./entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+CMD ["/bin/bash","/entrypoint.sh"]
 
