@@ -1,16 +1,20 @@
 #!/bin/bash
+export WORKIN_DIR="/home/container"
+mkdir /home/container/.tmp
 
 # - GIT -- Grab Maps and Server modifications from Github to tmp directory
-cd /home/container/.tmp && git clone --depth 1 "https://github.com/ChocoTaco1/TacoServer/" && cd ./TacoServer
-cd /home/container/.tmp && git clone --depth 1 "https://github.com/ChocoTaco1/TacoMaps/"  && cd ./TacoMaps
+cd ${WORKIN_DIR}/.tmp && git clone --depth 1 "https://github.com/ChocoTaco1/TacoServer/" && cd ./TacoServer
+cd ${WORKIN_DIR}/.tmp && git clone --depth 1 "https://github.com/ChocoTaco1/TacoMaps/"  && cd ./TacoMaps
 
 # - GIT Scripts -- Get the git scripts from the github with all the modifications
-cd /home/container && git clone --depth 1 "https://github.com/F9Alejandro/docker-tribesnext-server.git" docker-tn-srv
-cd ./docker-tn-srv && git checkout Wine
+cd ${WORKIN_DIR}
+git clone "https://github.com/F9Alejandro/docker-tribesnext-server.git" docker-tn-srv
+cd ./docker-tn-srv
+git checkout wine
 
 mkdir /home/container/.tmp/tribes2
 
-SVRDIR=/home/container/.tmp/tribes2
+SRVDIR=/home/container/.tmp/tribes2
 INSTDIR=/home/container/.wine32/drive_c/Dynamix/Tribes2
 
 # - SETUP -- Set wine win32 env
@@ -19,28 +23,34 @@ export WINEPREFIX=/home/container/.wine32/
 wine wineboot
 
 # - SCRIPT -- Installer
-cp _scripts/tribesnext-server-installer ${SRVDIR}/
+cd ${WORKIN_DIR}/docker-tn-srv
+cp ./_scripts/tribesnext-server-installer ${SRVDIR}/
 chmod +x ${SRVDIR}/tribesnext-server-installer
 ${SRVDIR}/tribesnext-server-installer
 
 # - SCRIPT -- Server (default)
-cp _script/start-server ${INSTDIR}/start-server
+cd ${WORKIN_DIR}/docker-tn-srv
+cp ./_script/start-server ${INSTDIR}/start-server
 chmod +x ${INSTDIR}/start-server
 
 # - Clean up TMP
-cp _scripts/cleanup ${SRVDIR}
+cd ${WORKIN_DIR}/docker-tn-srv
+cp ./_scripts/cleanup ${SRVDIR}
 chmod +x ${SRVDIR}/cleanup
 ${SRVDIR}/cleanup
 
 # - TacoServer -- Pull in resources from builder (/tmp)
-cp /tmp/TacoServer/Classic/. ${INSTDIR}/GameData/Classic/.
-cp /tmp/TacoMaps/ ${INSTDIR}/GameData/Classic/Maps/
+cd ${WORKIN_DIR}/docker-tn-srv
+cp .tmp/TacoServer/Classic/. ${INSTDIR}/GameData/Classic/.
+cp .tmp/TacoMaps/ ${INSTDIR}/GameData/Classic/Maps/
 
 # - SCRIPT -- Custom (custom content / overrides)
-cp _custom/. ${INSTDIR}/
+cd ${WORKIN_DIR}/docker-tn-srv
+cp ./_custom/. ${INSTDIR}/
 
 # - SCRIPT - Expand Admin Prefs
-cp _scripts/cfg_admin_prefs ${SRVDIR}
+cd ${WORKIN_DIR}/docker-tn-srv
+cp ./_scripts/cfg_admin_prefs ${SRVDIR}
 chmod +x ${SRVDIR}/cfg-admin-prefs
 
 

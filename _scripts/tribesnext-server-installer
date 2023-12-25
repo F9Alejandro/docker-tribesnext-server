@@ -7,7 +7,7 @@
 #
 
 SRVUSER=container
-INSBASE=/home/$SRVUSER/.wine32/drive_c/Dynamix/
+INSBASE=/home/$SRVUSER/.wine32/drive_c/Dynamix
 export TMPBASE=/home/container/.tmp/tribes2
 export WINEARCH=win32
 export WINEPREFIX=/home/$SRVUSER/.wine32/
@@ -74,7 +74,7 @@ fi
 
 # -- extract the main installer, the silent installer is a lie!
 echo "Installing T2..."
-/usr/bin/wine $TMPBASE/tribes2gsi.exe /x Z:\\tmp\\tribes2\\game
+/usr/bin/wine $TMPBASE/tribes2gsi.exe /x Z:\\home\\container\\.tmp\\tribes2\\game
 
 
 # -- move all extract files into place
