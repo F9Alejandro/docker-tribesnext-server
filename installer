@@ -40,7 +40,7 @@ chmod +x ${SRVDIR}/cleanup
 ${SRVDIR}/cleanup
 
 # - TacoServer -- Pull in resources from builder (/tmp)
-cd ${WORKIN_DIR}/docker-tn-srv
+cd ${WORKIN_DIR}/
 cp .tmp/TacoServer/Classic/. ${INSTDIR}/GameData/Classic/.
 cp .tmp/TacoMaps/ ${INSTDIR}/GameData/Classic/Maps/
 
