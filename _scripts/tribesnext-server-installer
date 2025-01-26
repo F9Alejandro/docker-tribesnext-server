@@ -16,7 +16,7 @@ function get_files {
 
 
 # -- make directories
-[ ! -d $TMPBASE ] && mkdir -p $TMPBASE
+[ ! -d $TMPBASE ] && mkdir -p $TMPBASE && chmod u+s,g+s $TMPBASE
 
 if [ ! -d $INSBASE ]
 then
@@ -24,6 +24,7 @@ then
     mkdir -p $INSBASE/tribes2/base/{music,lighting,textures,prefs}
     mkdir -p $INSBASE/tribes2/Classic/scripts/{turrets,weapons,autoexec,packs,vehicles}
 	mkdir -p $INSBASE/tribes2/Classic/{logs,stats,serverStats}
+	chmod u+s,g+s $INSBASE
 fi
 
 
@@ -43,6 +44,8 @@ echo "Installing T2..."
 # REMEMBER: There is no GameData in the linux version. Everything is up a dir
 [ -f $TMPBASE/t2-linux.zip ] && /usr/bin/unzip -o $TMPBASE/t2-linux.zip -d $TMPBASE/install 2>&1 > /dev/null
 # -- move all extract files into place
+chmod -R u=rwx,g=rx,o=rx $TMPBASE/install
+chmod -R u=rwx,g=rx,o=rx $INSBASE/tribes2
 cp -r $TMPBASE/install/t2-linux/. $INSBASE/tribes2/.
 echo "T2 installed!"
 
