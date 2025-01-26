@@ -3,7 +3,7 @@
 # -- tribes dedicated server installer
 SRVUSER=container
 INSBASE=/home/$SRVUSER/.loki/
-export TMPBASE=/tmp/tribes2
+export TMPBASE=/home/$SRVUSER/.tmp/tribes2
 
 
 # -- download the required the files
