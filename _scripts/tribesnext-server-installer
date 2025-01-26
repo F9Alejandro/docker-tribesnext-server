@@ -74,7 +74,7 @@ then
     tar -xzvf $TMPBASE/tribes2-lan-fix-linux.tar.gz -C $TMPBASE/lan-fix 2>&1 > /dev/null
     cp -r $TMPBASE/lan-fix/. $INSBASE/tribes2/.
     cd $INSBASE/tribes2/
-    xdelta3 decode -s tribes2d.dynamic tribes2-lan-fix-linux.xdelta tribes2d-lan.dynamic
+    ./xdelta3 decode -s tribes2d.dynamic tribes2-lan-fix-linux.xdelta tribes2d-lan.dynamic
     chmod +x tribes2d-lan.dynamic
 	echo "Finished setting up T2!"
 fi
