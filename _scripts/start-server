@@ -9,13 +9,13 @@ if [[ ! -f "$ADMINPREFS" ]]
 then
   echo "Update Admin & Server Prefs..."
   /home/container/cfg-admin-prefs
-  ln -sf "${ADMINPREFS}" ./
+  ln -sf $ADMINPREFS ./
   echo "Finished!"
 fi
 
 find ${BASEDIR} -name \*.dso -execdir /bin/rm {} \;
 
-cd $WINEPREFIX/drive_c/Dynamix/Tribes2/GameData
+cd $BASEDIR
 
 wine --version
 
