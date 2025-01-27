@@ -5,7 +5,7 @@ export WINEARCH=win32
 BASEDIR=$WINEPREFIX/drive_c/Dynamix/Tribes2/GameData
 
 echo "Update Admin & Server Prefs..."
-/home/container/.tmp/tribes2/cfg-admin-prefs
+/home/container/cfg-admin-prefs
 echo "Finished!"
 
 find ${BASEDIR} -name \*.dso -execdir /bin/rm {} \;
