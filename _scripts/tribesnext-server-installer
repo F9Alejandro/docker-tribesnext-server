@@ -44,8 +44,8 @@ get_files TribesNext_rc2a.exe                 "https://www.tribesnext.com/files/
 get_files msvcrt-ruby190.zip                  "https://www.dropbox.com/s/bvh9631a4mtuisf/msvcrt-ruby190.zip"        "$TMPBASE"
 get_files classic_v152.zip                    "https://tribes2stats.com/files/mods/"                                "$TMPBASE"
 #get_files vcrun22-wine.zip                    "https://www.dropbox.com/scl/fi/3stiwbakjom75l1hgjgql/vcrun22-wine.zip?rlkey=tv15a6fqfllma61mfegrz7l7s&"    "$TMPBASE"
-get_files t2-auth-faster.zip                  "https://cdn.discordapp.com/attachments/1154920105097040023/1154923875562422382/t2-auth-faster.zip?ex=6518b0ad&is=65175f2d&hm=5be90f772b1c0a0046331ffce8350a9c686ba242dcaa7a2350ebd433798f81cc&"  "$TMPBASE"
-get_files vcrun22.zip                         "https://cdn.discordapp.com/attachments/521797012014759970/1158166748441354401/vcrun22.zip?ex=651b4256&is=6519f0d6&hm=daccf567aa7b663ee0bfb93663a5b21a61ef4f97fc42dd5aa35e84bffd3e2a3c&"  "$TMPBASE"
+get_files t2-auth-faster.zip                  "https://www.dropbox.com/scl/fi/gu5eixt8q078fnweahov3/t2-auth-faster.zip?rlkey=gy4u4789ylfhvr1iqi2zp30bz&st=ka7s1r74"  "$TMPBASE"
+get_files vcrun22.zip                         "https://cdn.discordapp.com/attachments/613393409868169251/1333212801564672110/vcrun22.zip?ex=679812ad&is=6796c12d&hm=fd8e2db8184cc7bfa9ea8959f5a3f2f3a292c7c5327c528e27ecd4ef0e3783ff&"  "$TMPBASE"
 
 # -- some items require an headerless
 export DISPLAY=:99
